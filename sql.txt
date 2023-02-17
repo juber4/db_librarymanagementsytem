@@ -1,0 +1,68 @@
+CREATE TABLE `tb1_borrower` (
+  `borrower_CardNo` int NOT NULL,
+  `borrower_BorrowerName` varchar(100) NOT NULL,
+  `borrower_BorrowerAddress` varchar(200) NOT NULL,
+  `borrower_BorrowerPhone` varchar(50) NOT NULL,
+  PRIMARY KEY (`borrower_CardNo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+CREATE TABLE `tb1_book` (
+  `book_BookID` int NOT NULL,
+  `book_Title` varchar(100) NOT NULL,
+  `book_PublisherName` varchar(100) NOT NULL,
+  PRIMARY KEY (`book_BookID`),
+  KEY `book_PublisherName_fk` (`book_PublisherName`),
+  CONSTRAINT `book_PublisherName_fk` FOREIGN KEY (`book_PublisherName`) REFERENCES `tb1_publisher` (`publisher_PublisherName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `tb1_book_authors` (
+  `book_authors_AuthorId` int NOT NULL,
+  `book_authors_BookID` int NOT NULL,
+  `book_authors_AuthorName` varchar(50) NOT NULL,
+  PRIMARY KEY (`book_authors_AuthorId`),
+  KEY `book_authors_BookID_fk` (`book_authors_BookID`),
+  CONSTRAINT `book_authors_BookID_fk` FOREIGN KEY (`book_authors_BookID`) REFERENCES `tb1_book` (`book_BookID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `tb1_book_copies` (
+  `book_copies_copiesID` int NOT NULL,
+  `book_copies_BookId` int NOT NULL,
+  `book_copies_BranchID` int NOT NULL,
+  `book_copies_No_of_Copies` int NOT NULL,
+  PRIMARY KEY (`book_copies_copiesID`),
+  KEY `book_copies_BookID_fk` (`book_copies_BookId`),
+  KEY `book_copies_BranchID_fk` (`book_copies_BranchID`),
+  CONSTRAINT `book_copies_BookID_fk` FOREIGN KEY (`book_copies_BookId`) REFERENCES `tb1_book` (`book_BookID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `book_copies_BranchID_fk` FOREIGN KEY (`book_copies_BranchID`) REFERENCES `tb1_library_branch` (`Library_branch_BranchID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `tb1_book_loans` (
+  `book_loans_LoansID` int NOT NULL,
+  `book_loans_BookID` int NOT NULL,
+  `book_loans_BranchId` int NOT NULL,
+  `book_loans_Cardno` int NOT NULL,
+  `book_loans_DateOut` varchar(50) NOT NULL,
+  `book_loans_Duedate` varchar(50) NOT NULL,
+  PRIMARY KEY (`book_loans_LoansID`),
+  KEY `book_loans_BookID_fk` (`book_loans_BookID`),
+  KEY `book_loans_BranchID_fk` (`book_loans_BranchId`),
+  KEY `book_loans_Cardno_fk` (`book_loans_Cardno`),
+  CONSTRAINT `book_loans_BookID_fk` FOREIGN KEY (`book_loans_BookID`) REFERENCES `tb1_book` (`book_BookID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `book_loans_BranchID_fk` FOREIGN KEY (`book_loans_BranchId`) REFERENCES `tb1_library_branch` (`Library_branch_BranchID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `book_loans_Cardno_fk` FOREIGN KEY (`book_loans_Cardno`) REFERENCES `tb1_borrower` (`borrower_CardNo`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `tb1_library_branch` (
+  `Library_branch_BranchID` int NOT NULL,
+  `Libraray_branch_BranchName` varchar(100) NOT NULL,
+  `Library_branchAddress` varchar(200) NOT NULL,
+  PRIMARY KEY (`Library_branch_BranchID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `tb1_publisher` (
+  `publisher_PublisherName` varchar(100) NOT NULL,
+  `publisher_PublisherAddress` varchar(200) NOT NULL,
+  `publisher_PublisherPhone` varchar(200) NOT NULL,
+  PRIMARY KEY (`publisher_PublisherName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
